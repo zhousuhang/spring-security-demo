@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,5 +26,32 @@ public class UserController {
 		users.add(new User());
 		return users;
 	}
-
+	
+	@RequestMapping(value="/user/{id}", method=RequestMethod.GET)
+	public User details(@PathVariable int id) {
+		User user = new User();
+		user.setUsername("tom");
+		return user;
+	}
+	
+	@RequestMapping(value="/user", method=RequestMethod.POST)
+	public User create(@RequestBody User user) {
+		user.setId(1);
+		System.out.println(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
+		return user;
+	}
+	
+	@RequestMapping(value="/user/{id}", method=RequestMethod.PUT)
+	public User update(@RequestBody User user, @PathVariable int id) {
+		
+		System.out.println(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
+		return user;
+	}
+	
+	@RequestMapping(value="/user/{id}", method=RequestMethod.DELETE)
+	public void delete(@PathVariable int id) {
+		
+//		return user;
+	}
+	
 }
