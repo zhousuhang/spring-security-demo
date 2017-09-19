@@ -1,10 +1,32 @@
 package com.zhousuhang.demo.dto;
 
+import java.util.Date;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.zhousuhang.demo.validator.MyConstraint;
+
 public class User {
+	
+	public interface UserSimpleView {};
+	public interface UserDetailView extends UserSimpleView {};
+	
+	@JsonView(UserSimpleView.class)
 	private Integer id;
+	
+	@JsonView(UserSimpleView.class)
+	@MyConstraint(message = "this is a validator test")
 	private String username;
+	
+	@JsonView(UserDetailView.class)
+	@NotBlank
 	private String password;
-	private long birthday;
+	
+	@JsonView(UserSimpleView.class)
+	private Date birthday;
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -23,10 +45,10 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public long getBirthday() {
+	public Date getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(long birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 	

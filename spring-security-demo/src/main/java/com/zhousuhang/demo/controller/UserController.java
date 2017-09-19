@@ -3,21 +3,31 @@ package com.zhousuhang.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.zhousuhang.demo.dto.User;
 import com.zhousuhang.demo.dto.UserQueryCondition;
 
 @RestController
+@RequestMapping(value = "/user")
 public class UserController {
 
-	@RequestMapping(value = "/user", method = RequestMethod.GET)
+	@GetMapping
+	@JsonView(User.UserSimpleView.class)
 	public List<User> query(UserQueryCondition condition) {
 		System.out.println(ReflectionToStringBuilder.toString(condition, ToStringStyle.MULTI_LINE_STYLE));
 		List<User> users = new ArrayList<>();
@@ -27,29 +37,38 @@ public class UserController {
 		return users;
 	}
 	
-	@RequestMapping(value="/user/{id}", method=RequestMethod.GET)
-	public User details(@PathVariable int id) {
+	@GetMapping(value="/{id:\\d+}")
+	@JsonView(User.UserDetailView.class)
+	public User getInfo(@PathVariable String id) {
 		User user = new User();
 		user.setUsername("tom");
 		return user;
 	}
 	
-	@RequestMapping(value="/user", method=RequestMethod.POST)
-	public User create(@RequestBody User user) {
+	@PostMapping
+	public User create(@Valid @RequestBody User user, BindingResult errors) {
+
+		if (errors.hasErrors()) {
+			errors.getAllErrors().stream().forEach(error -> {
+				FieldError fieldError = (FieldError)error;
+				System.out.println(fieldError.getField()+" "+ error.getDefaultMessage());
+			});
+		}
+
 		user.setId(1);
 		System.out.println(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
 		return user;
 	}
 	
-	@RequestMapping(value="/user/{id}", method=RequestMethod.PUT)
-	public User update(@RequestBody User user, @PathVariable int id) {
+	@PutMapping(value="/{id:\\d+}")
+	public User update(@RequestBody User user, @PathVariable String id) {
 		
 		System.out.println(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
 		return user;
 	}
 	
-	@RequestMapping(value="/user/{id}", method=RequestMethod.DELETE)
-	public void delete(@PathVariable int id) {
+	@DeleteMapping(value="/{id:\\d+}")
+	public void delete(@PathVariable String id) {
 		
 //		return user;
 	}
