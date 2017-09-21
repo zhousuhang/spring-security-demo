@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
@@ -34,6 +35,8 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 	private Set<String> urls = new HashSet<>();
 	
 	private AntPathMatcher antPathMatcher = new AntPathMatcher();
+	
+	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 	
 	@Override
 	public void afterPropertiesSet() throws ServletException {

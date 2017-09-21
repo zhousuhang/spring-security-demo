@@ -3,16 +3,21 @@ package com.zhousuhang.demo.validator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class MyConstraintValidator implements ConstraintValidator<MyConstraint, Object> {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class MyConstraintValidator implements ConstraintValidator<MyConstraint, Object> {
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Override
 	public void initialize(MyConstraint constraintAnnotation) {
-		System.out.println("my validator init");
+		logger.info("my validator init");
 	}
 
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
-		System.out.println(value);
+		logger.info(value.toString());
 		return true;
 	}
 

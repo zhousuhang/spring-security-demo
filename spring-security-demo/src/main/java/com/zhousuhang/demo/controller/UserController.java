@@ -7,6 +7,8 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,11 +27,13 @@ import com.zhousuhang.demo.dto.UserQueryCondition;
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping
 	@JsonView(User.UserSimpleView.class)
 	public List<User> query(UserQueryCondition condition) {
-		System.out.println(ReflectionToStringBuilder.toString(condition, ToStringStyle.MULTI_LINE_STYLE));
+		logger.info(ReflectionToStringBuilder.toString(condition, ToStringStyle.MULTI_LINE_STYLE));
 		List<User> users = new ArrayList<>();
 		users.add(new User());
 		users.add(new User());
@@ -51,19 +55,19 @@ public class UserController {
 		if (errors.hasErrors()) {
 			errors.getAllErrors().stream().forEach(error -> {
 				FieldError fieldError = (FieldError)error;
-				System.out.println(fieldError.getField()+" "+ error.getDefaultMessage());
+				logger.info(fieldError.getField()+" "+ error.getDefaultMessage());
 			});
 		}
 
 		user.setId(1);
-		System.out.println(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
+		logger.info(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
 		return user;
 	}
 	
 	@PutMapping(value="/{id:\\d+}")
 	public User update(@RequestBody User user, @PathVariable String id) {
 		
-		System.out.println(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
+		logger.info(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
 		return user;
 	}
 	

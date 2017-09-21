@@ -10,27 +10,32 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //@Component
 public class TimeFilter implements Filter {
-
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		System.out.println("my time filter init");
+		logger.info("my time filter init");
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("my time filter start");
+		logger.info("my time filter start");
 		long startTime = new Date().getTime();
 		chain.doFilter(request, response);
-		System.out.println("my time filter: "+ (new Date().getTime()-startTime));
-		System.out.println("my time filter finish");
+		logger.info("my time filter: "+ (new Date().getTime()-startTime));
+		logger.info("my time filter finish");
 	}
 
 	@Override
 	public void destroy() {
-		System.out.println("my time filter destroy");
+		logger.info("my time filter destroy");
 	}
 
 }
