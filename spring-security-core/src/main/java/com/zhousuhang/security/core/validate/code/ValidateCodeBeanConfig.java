@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.zhousuhang.security.core.properties.SecurityProperties;
+import com.zhousuhang.security.core.validate.code.sms.DefaultSmsSender;
+import com.zhousuhang.security.core.validate.code.sms.SmsSender;
 
 @Configuration
 public class ValidateCodeBeanConfig {
@@ -19,6 +21,12 @@ public class ValidateCodeBeanConfig {
 		ImageCodeGenerator codeGenerator = new ImageCodeGenerator();
 		codeGenerator.setSecurityProperties(securityProperties);
 		return codeGenerator;
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean(SmsSender.class)
+	public SmsSender smsCodeSender(){
+		return new DefaultSmsSender();
 	}
 
 }

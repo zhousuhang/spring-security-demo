@@ -23,11 +23,20 @@ public class ValidateCodeController {
 	@Autowired
 	ValidateCodeGenerator imageCodeGenerator;
 	
+	@Autowired
+	ValidateCodeGenerator smsCodeGenerator;
+	
 	@GetMapping("/code/image")
-	public void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		ImageCode imageCode = imageCodeGenerator.generator(request);
+	public void createImageCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		ImageCode imageCode = (ImageCode) imageCodeGenerator.generator(request);
 		sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, imageCode);
 		ImageIO.write(imageCode.getImage(), "JPEG", response.getOutputStream());
+	}
+	
+	@GetMapping("/code/sms")
+	public void createSmsCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		ValidateCode smsCode = smsCodeGenerator.generator(request);
+		sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, smsCode);
 	}
 
 }

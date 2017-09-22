@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
@@ -35,8 +33,6 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 	private Set<String> urls = new HashSet<>();
 	
 	private AntPathMatcher antPathMatcher = new AntPathMatcher();
-	
-	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 	
 	@Override
 	public void afterPropertiesSet() throws ServletException {
@@ -92,24 +88,13 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 		sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
 	}
 
-	public AuthenticationFailureHandler getAuthenticationFailureHandler() {
-		return authenticationFailureHandler;
-	}
-
 	public void setAuthenticationFailureHandler(AuthenticationFailureHandler authenticationFailureHandler) {
 		this.authenticationFailureHandler = authenticationFailureHandler;
 	}
 
-	public SecurityProperties getSecurityProperties() {
-		return securityProperties;
-	}
 
 	public void setSecurityProperties(SecurityProperties securityProperties) {
 		this.securityProperties = securityProperties;
-	}
-
-	public Set<String> getUrls() {
-		return urls;
 	}
 
 	public void setUrls(Set<String> urls) {
