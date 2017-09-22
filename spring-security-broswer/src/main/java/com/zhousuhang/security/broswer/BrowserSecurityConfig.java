@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import com.zhousuhang.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.zhousuhang.security.core.properties.SecurityConstants;
 import com.zhousuhang.security.core.properties.SecurityProperties;
 import com.zhousuhang.security.core.properties.ValidateCodeSecurityConfig;
 import com.zhousuhang.security.core.validate.code.ValidateCodeFilter;
@@ -40,6 +42,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 	
+	@Autowired
+	private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+	
 	@Bean
 	public PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
@@ -59,6 +64,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 		validateCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
 		validateCodeFilter.setSecurityProperties(securityProperties);
 		validateCodeFilter.afterPropertiesSet();
+		validateCodeFilter.afterPropertiesSet();
 		
 		http.apply(validateCodeSecurityConfig)
 			.and()
@@ -74,10 +80,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 			.userDetailsService(userDetailsService)
 			.and()
 			.authorizeRequests()
-			.antMatchers("/authentication/require", securityProperties.getBroswer().getLoginPage(), "/code/image").permitAll()
+			.antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL, 
+					securityProperties.getBroswer().getLoginPage(), "/code/*").permitAll()
 			.anyRequest()
 			.authenticated()
 			.and()
-			.csrf().disable();
+			.csrf().disable()
+			.apply(smsCodeAuthenticationSecurityConfig);
 	}
 }

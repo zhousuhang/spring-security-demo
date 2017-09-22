@@ -10,7 +10,7 @@ public class ValidateCodeProcessorHolder {
 
 	@Autowired
 	private Map<String, ValidateCodeProcessor> validateCodeProcessors;
-
+	
 	public ValidateCodeProcessor findValidateCodeProcessor(ValidateCodeType type) {
 		return findValidateCodeProcessor(type.toString().toLowerCase());
 	}

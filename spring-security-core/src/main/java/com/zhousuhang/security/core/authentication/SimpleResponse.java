@@ -1,4 +1,4 @@
-package com.zhousuhang.security.broswer.support;
+package com.zhousuhang.security.core.authentication;
 
 public class SimpleResponse {
 	private Object content;

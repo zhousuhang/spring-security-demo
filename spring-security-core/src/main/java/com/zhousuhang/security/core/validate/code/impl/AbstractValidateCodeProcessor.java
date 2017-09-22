@@ -16,7 +16,7 @@ import com.zhousuhang.security.core.validate.code.ValidateCodeGenerator;
 import com.zhousuhang.security.core.validate.code.ValidateCodeProcessor;
 import com.zhousuhang.security.core.validate.code.ValidateCodeType;
 
-public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> implements ValidateCodeProcessor {
+public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> implements ValidateCodeProcessor {
 	
 	private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 	
@@ -25,12 +25,12 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 
 	@Override
 	public void create(ServletWebRequest request) throws Exception {
-		C validateCode = generate(request);
+		T validateCode = generate(request);
 		save(request, validateCode);
 		send(request, validateCode);
 	}
 
-	private C generate(ServletWebRequest request) {
+	private T generate(ServletWebRequest request) {
 		String type = getValidateCodeType(request).toString().toLowerCase();
 		String generatorName = type + ValidateCodeGenerator.class.getSimpleName();
 		ValidateCodeGenerator validateCodeGenerator = validateCodeGenerators.get(generatorName);
@@ -38,11 +38,11 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 			throw new ValidateCodeException("验证码生成器" + generatorName + "不存在");
 		}
 		@SuppressWarnings("unchecked")
-		C generate = (C) validateCodeGenerator.generate(request);
+		T generate = (T) validateCodeGenerator.generate(request);
 		return generate;
 	}
 	
-	private void save(ServletWebRequest request, C validateCode) {
+	private void save(ServletWebRequest request, T validateCode) {
 		sessionStrategy.setAttribute(request, getSessionKey(request), validateCode);
 	}
 	
@@ -50,7 +50,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 		return SESSION_KEY_PREFIX + getValidateCodeType(request).toString().toUpperCase();
 	}
 	
-	protected abstract void send(ServletWebRequest request, C validateCode) throws Exception;
+	protected abstract void send(ServletWebRequest request, T validateCode) throws Exception;
 	
 	private ValidateCodeType getValidateCodeType(ServletWebRequest request) {
 		String type = StringUtils.substringBefore(getClass().getSimpleName(), "CodeProcessor");
@@ -64,7 +64,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 		String sessionKey = getSessionKey(request);
 
 		@SuppressWarnings("unchecked")
-		C codeInSession = (C) sessionStrategy.getAttribute(request, sessionKey);
+		T codeInSession = (T) sessionStrategy.getAttribute(request, sessionKey);
 
 		String codeInRequest;
 		try {
