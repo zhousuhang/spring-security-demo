@@ -12,11 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.zhousuhang.security.core.properties.SecurityProperties;
+import com.zhousuhang.security.core.properties.ValidateCodeSecurityConfig;
 import com.zhousuhang.security.core.validate.code.ValidateCodeFilter;
 
 @Configuration
@@ -36,6 +36,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder(){
@@ -57,7 +60,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 		validateCodeFilter.setSecurityProperties(securityProperties);
 		validateCodeFilter.afterPropertiesSet();
 		
-		http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+		http.apply(validateCodeSecurityConfig)
+			.and()
 			.formLogin()
 			.loginPage("/authentication/require")
 			.loginProcessingUrl("/demo/login")
