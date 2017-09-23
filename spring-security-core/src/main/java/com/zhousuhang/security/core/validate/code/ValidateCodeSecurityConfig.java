@@ -1,4 +1,4 @@
-package com.zhousuhang.security.core.properties;
+package com.zhousuhang.security.core.validate.code;
 
 import javax.servlet.Filter;
 

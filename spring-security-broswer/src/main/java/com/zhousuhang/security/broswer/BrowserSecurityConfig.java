@@ -6,32 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import com.zhousuhang.security.core.authentication.AbstractChannelSecurityConfig;
 import com.zhousuhang.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.zhousuhang.security.core.properties.SecurityConstants;
 import com.zhousuhang.security.core.properties.SecurityProperties;
-import com.zhousuhang.security.core.properties.ValidateCodeSecurityConfig;
-import com.zhousuhang.security.core.validate.code.ValidateCodeFilter;
+import com.zhousuhang.security.core.validate.code.ValidateCodeSecurityConfig;
 
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 	
 	@Autowired
 	private SecurityProperties securityProperties;
 	
-	@Autowired
-	private AuthenticationSuccessHandler myAuthenticationSuccessHandler;
-	
-	@Autowired
-	private AuthenticationFailureHandler myAuthenticationFailureHandler;
 	
 	@Autowired
 	private DataSource dataSource;
@@ -60,32 +52,22 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
-		validateCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
-		validateCodeFilter.setSecurityProperties(securityProperties);
-		validateCodeFilter.afterPropertiesSet();
-		validateCodeFilter.afterPropertiesSet();
-		
+		applyPasswordAuthenticationConfig(http);
 		http.apply(validateCodeSecurityConfig)
 			.and()
-			.formLogin()
-			.loginPage("/authentication/require")
-			.loginProcessingUrl("/demo/login")
-			.successHandler(myAuthenticationSuccessHandler)
-			.failureHandler(myAuthenticationFailureHandler)
+				.apply(smsCodeAuthenticationSecurityConfig)
 			.and()
-			.rememberMe()
-			.tokenRepository(persistentTokenRepository())
-			.tokenValiditySeconds(securityProperties.getBroswer().getRememberMeSeconds())
-			.userDetailsService(userDetailsService)
+				.rememberMe()
+					.tokenRepository(persistentTokenRepository())
+					.tokenValiditySeconds(securityProperties.getBroswer().getRememberMeSeconds())
+					.userDetailsService(userDetailsService)
 			.and()
-			.authorizeRequests()
-			.antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL, 
-					securityProperties.getBroswer().getLoginPage(), "/code/*").permitAll()
-			.anyRequest()
-			.authenticated()
+				.authorizeRequests()
+					.antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL, 
+							securityProperties.getBroswer().getLoginPage(), "/code/*").permitAll()
+					.anyRequest()
+					.authenticated()
 			.and()
-			.csrf().disable()
-			.apply(smsCodeAuthenticationSecurityConfig);
+				.csrf().disable();
 	}
 }
