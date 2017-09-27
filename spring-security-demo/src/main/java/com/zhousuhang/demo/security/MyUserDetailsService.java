@@ -32,7 +32,7 @@ public class MyUserDetailsService implements UserDetailsService, SocialUserDetai
 	@Override
 	public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
 		logger.info("登录userId： "+userId);
-		return new SocialUser(userId, passwordEncoder.encode("123456"),true,true,true,true, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+		return new SocialUser(userId, passwordEncoder.encode("123456"),true,true,true,true, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER"));
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.zhousuhang.security.broswer.authentication;
+package com.zhousuhang.security.app.authentication;
 
 import java.io.IOException;
 

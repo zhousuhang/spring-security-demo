@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zhousuhang.security.broswer.support.SimpleResponse;
 import com.zhousuhang.security.core.properties.SecurityProperties;
+import com.zhousuhang.security.core.support.SimpleResponse;
 
 @RestController
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED)

@@ -11,9 +11,16 @@
 	<artifactId>spring-security-demo</artifactId>
 
 	<dependencies>
+		<!-- 
 		<dependency>
 			<groupId>com.zhousuhang.demo</groupId>
 			<artifactId>spring-security-broswer</artifactId>
+			<version>${zhousuhang.security.version}</version>
+		</dependency>
+		 -->
+		<dependency>
+			<groupId>com.zhousuhang.demo</groupId>
+			<artifactId>spring-security-app</artifactId>
 			<version>${zhousuhang.security.version}</version>
 		</dependency>
 		<dependency>
